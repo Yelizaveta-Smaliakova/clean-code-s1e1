@@ -5,25 +5,25 @@
   font-family: Lato, sans-serif;
 }
 
-.aaa {
+.main-picture {
   width: 500px;
   margin: 0 auto;
   display: block;
   text-align: right;
 }
 
-.aaa img {
+.main-picture img {
   width: 100%;
 }
 
-.aaa 
+.main-picture 
 .more_inf {
   font-family: fantasy, cursive;
 }
 
 @media (max-width: 768px) {
 
-  .aaa { 
+  .main-picture { 
       text-align: center;
   }
 
