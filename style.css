@@ -58,6 +58,10 @@
   outline: none;
 }
 
+.Todo-section__checkbox{
+  margin:3px 3px 3px 4px;
+}
+
 .Add-section__button,
 .Todo-section__button,
 .Completed-section__button {
@@ -136,23 +140,18 @@
   vertical-align: middle;
 }
 
-.Todo-section__input {
-  margin: 0 10px;
-}
-
 .Todo-section__label,
 .Completed-section__label {
   padding-left: 10px;
   box-sizing: border-box;
   font-size: 18px;
-  width: 226px;
-  width: 56%;
+  width: 244px;
   display: inline-block;
 }
 
 .Completed-section__input-text,
 .Completed-section__input-text {
-  width: 226px;
+  width: 224px;
 }
 
 .Todo-section__button-delete:hover,
