@@ -32,18 +32,23 @@ var createNewTaskElement=function(taskString){
     var deleteButton=document.createElement("button");//delete button
     var deleteButtonImg=document.createElement("img");//delete button image
 
+    listItem.className="Todo-section__list-point"
+
+    // li.className="Todo-section__list-point"
     label.innerText=taskString;
-    label.className='task';
+    label.className="Todo-section__label";
 
     //Each elements, needs appending
     checkBox.type="checkbox";
+    checkBox.className="Todo-section__input Todo-section__checkbox"
     editInput.type="text";
+    editInput.className="Todo-section__input Todo-section__input-text";
 
     editButton.innerText="Edit"; //innerText encodes special characters, HTML does not.
-    editButton.className="edit";
+    editButton.className="Todo-section__button-edit Todo-section__button";
 
     // deleteButton.innerText="Delete";
-    deleteButton.className="delete";
+    deleteButton.className="Todo-section__button Todo-section__button-delete";
     deleteButtonImg.src='./remove.svg';
     deleteButton.appendChild(deleteButtonImg);
 
@@ -82,10 +87,11 @@ var editTask=function(){
 
     var listItem=this.parentNode;
 
-    var editInput=listItem.querySelector('input[type=text]');
+    if(listItem.classList.contains("Todo-section__list-point")){
+        var editInput=listItem.querySelector('input[type=text]');
     var label=listItem.querySelector("label");
-    var editBtn=listItem.querySelector(".edit");
-    var containsClass=listItem.classList.contains("edit-mode");
+    var editBtn=listItem.querySelector(".Todo-section__button-edit");
+    var containsClass=listItem.classList.contains("Todo-section__list-point_edit-mode");
     //If class of the parent is .edit-mode
     if(containsClass){
 
@@ -99,7 +105,36 @@ var editTask=function(){
     }
 
     //toggle .edit-mode on the parent.
-    listItem.classList.toggle("edit-mode");
+    listItem.classList.toggle("Todo-section__list-point_edit-mode");
+    }
+
+    if(listItem.classList.contains("Completed-section__list-point")){
+        var editInput=listItem.querySelector('input[type=text]');
+    var label=listItem.querySelector("label");
+    var editBtn;
+    if (listItem.querySelector(".Todo-section__button-edit")){
+        editBtn=listItem.querySelector(".Todo-section__button-edit");
+    }
+    else{
+        editBtn=listItem.querySelector(".Completed-section__button-edit");
+    }
+    
+    var containsClass=listItem.classList.contains("Completed-section__list-point_edit-mode");
+    //If class of the parent is .edit-mode
+    if(containsClass){
+
+        //switch to .edit-mode
+        //label becomes the inputs value.
+        label.innerText=editInput.value;
+        editBtn.innerText="Edit";
+    }else{
+        editInput.value=label.innerText;
+        editBtn.innerText="Save";
+    }
+
+    //toggle .edit-mode on the parent.
+    listItem.classList.toggle("Completed-section__list-point_edit-mode");
+    }
 };
 
 
@@ -121,8 +156,35 @@ var taskCompleted=function(){
 
     //Append the task list item to the #completed-tasks
     var listItem=this.parentNode;
+    listItem.classList.remove("Todo-section__list-point");
+    listItem.classList.add("Completed-section__list-point");
+    if(listItem.classList.contains("Todo-section__list-point_edit-mode")){
+        listItem.classList.remove("Todo-section__list-point_edit-mode");
+        listItem.classList.add("Completed-section__list-point_edit-mode");
+    }
+
+    var label=listItem.querySelector("label");
+    label.className="Completed-section__label";
+    var checkBox=listItem.querySelector("input[type=checkbox]");
+    checkBox.className="Completed-section__input";
+    var text=listItem.querySelector("input[type=text]");
+    text.className="Completed-section__input Completed-section__input-text";
+    var editButton=listItem.querySelector("button.Todo-section__button-edit");
+    editButton.classList.remove("Todo-section__button");
+    editButton.classList.add("Completed-section__button");
+    editButton.classList.remove("Todo-section__button-edit");
+    editButton.classList.add("Completed-section__button-edit");
+    var deleteButton = listItem.querySelector("button.Todo-section__button");
+    deleteButton.classList.remove("Todo-section__button");
+    deleteButton.classList.add("Completed-section__button");
+    deleteButton.classList.remove("Todo-section__button-delete");
+    deleteButton.classList.add("Completed-section__button-delete");
+
+
     completedTasksHolder.appendChild(listItem);
+
     bindTaskEvents(listItem, taskIncomplete);
+
 
 }
 
@@ -133,8 +195,35 @@ var taskIncomplete=function(){
     //When the checkbox is unchecked
     //Append the task list item to the #incompleteTasks.
     var listItem=this.parentNode;
+
+    var listItem=this.parentNode;
+    listItem.classList.remove("Completed-section__list-point");
+    listItem.classList.add("Todo-section__list-point");
+    if(listItem.classList.contains("Completed-section__list-point_edit-mode")){
+        listItem.classList.remove("Completed-section__list-point_edit-mode");
+        listItem.classList.add("Todo-section__list-point_edit-mode");
+    }
+
+    var label=listItem.querySelector("label");
+    label.className="Todo-section__label";
+    var checkBox=listItem.querySelector("input[type=checkbox]");
+    checkBox.className="Todo-section__input";
+    var text=listItem.querySelector("input[type=text]");
+    text.className="Todo-section__input Todo-section__input-text";
+    var editButton=listItem.querySelector("button.Completed-section__button-edit");
+    editButton.classList.remove("Completed-section__button");
+    editButton.classList.add("Todo-section__button");
+    editButton.classList.remove("Completed-section__button-edit");
+    editButton.classList.add("Todo-section__button-edit");
+    var deleteButton = listItem.querySelector("button.Completed-section__button-delete");
+    deleteButton.classList.remove("Completed-section__button");
+    deleteButton.classList.add("Todo-section__button");
+    deleteButton.classList.remove("Completed-section__button-delete");
+    deleteButton.classList.add("Todo-section__button-delete");
+
     incompleteTaskHolder.appendChild(listItem);
     bindTaskEvents(listItem,taskCompleted);
+    
 }
 
 
@@ -155,9 +244,23 @@ addButton.addEventListener("click",ajaxRequest);
 var bindTaskEvents=function(taskListItem,checkBoxEventHandler){
     console.log("bind list item events");
 //select ListItems children
+    
     var checkBox=taskListItem.querySelector("input[type=checkbox]");
-    var editButton=taskListItem.querySelector("button.edit");
-    var deleteButton=taskListItem.querySelector("button.delete");
+    var editButton;
+    if (taskListItem.querySelector("button.Completed-section__button-edit")){
+        editButton=taskListItem.querySelector("button.Completed-section__button-edit");
+    }
+    else {
+        editButton=taskListItem.querySelector("button.Todo-section__button-edit");
+    }
+
+    var deleteButton;
+    if (taskListItem.querySelector("button.Completed-section__button-edit")){
+        deleteButton=taskListItem.querySelector("button.Completed-section__button-delete");
+    }
+    else {
+        deleteButton=taskListItem.querySelector("button.Todo-section__button-delete");
+    }
 
 
     //Bind editTask to edit button.
