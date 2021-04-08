@@ -45,10 +45,10 @@ var createNewTaskElement=function(taskString){
     editInput.className="Todo-section__input Todo-section__input-text";
 
     editButton.innerText="Edit"; //innerText encodes special characters, HTML does not.
-    editButton.className="edit Todo-section__button";
+    editButton.className="Todo-section__button-edit Todo-section__button";
 
     // deleteButton.innerText="Delete";
-    deleteButton.className="delete Todo-section__button Todo-section__button-delete";
+    deleteButton.className="Todo-section__button Todo-section__button-delete";
     deleteButtonImg.src='./remove.svg';
     deleteButton.appendChild(deleteButtonImg);
 
@@ -90,7 +90,7 @@ var editTask=function(){
     if(listItem.classList.contains("Todo-section__list-point")){
         var editInput=listItem.querySelector('input[type=text]');
     var label=listItem.querySelector("label");
-    var editBtn=listItem.querySelector(".edit");
+    var editBtn=listItem.querySelector(".Todo-section__button-edit");
     var containsClass=listItem.classList.contains("Todo-section__list-point_edit-mode");
     //If class of the parent is .edit-mode
     if(containsClass){
@@ -111,7 +111,14 @@ var editTask=function(){
     if(listItem.classList.contains("Completed-section__list-point")){
         var editInput=listItem.querySelector('input[type=text]');
     var label=listItem.querySelector("label");
-    var editBtn=listItem.querySelector(".edit");
+    var editBtn;
+    if (listItem.querySelector(".Todo-section__button-edit")){
+        editBtn=listItem.querySelector(".Todo-section__button-edit");
+    }
+    else{
+        editBtn=listItem.querySelector(".Completed-section__button-edit");
+    }
+    
     var containsClass=listItem.classList.contains("Completed-section__list-point_edit-mode");
     //If class of the parent is .edit-mode
     if(containsClass){
@@ -162,10 +169,12 @@ var taskCompleted=function(){
     checkBox.className="Completed-section__input";
     var text=listItem.querySelector("input[type=text]");
     text.className="Completed-section__input Completed-section__input-text";
-    var editButton=listItem.querySelector("button.edit");
+    var editButton=listItem.querySelector("button.Todo-section__button-edit");
     editButton.classList.remove("Todo-section__button");
     editButton.classList.add("Completed-section__button");
-    var deleteButton = listItem.querySelector("button.delete");
+    editButton.classList.remove("Todo-section__button-edit");
+    editButton.classList.add("Completed-section__button-edit");
+    var deleteButton = listItem.querySelector("button.Todo-section__button");
     deleteButton.classList.remove("Todo-section__button");
     deleteButton.classList.add("Completed-section__button");
     deleteButton.classList.remove("Todo-section__button-delete");
@@ -201,10 +210,12 @@ var taskIncomplete=function(){
     checkBox.className="Todo-section__input";
     var text=listItem.querySelector("input[type=text]");
     text.className="Todo-section__input Todo-section__input-text";
-    var editButton=listItem.querySelector("button.edit");
+    var editButton=listItem.querySelector("button.Completed-section__button-edit");
     editButton.classList.remove("Completed-section__button");
     editButton.classList.add("Todo-section__button");
-    var deleteButton = listItem.querySelector("button.delete");
+    editButton.classList.remove("Completed-section__button-edit");
+    editButton.classList.add("Todo-section__button-edit");
+    var deleteButton = listItem.querySelector("button.Completed-section__button-delete");
     deleteButton.classList.remove("Completed-section__button");
     deleteButton.classList.add("Todo-section__button");
     deleteButton.classList.remove("Completed-section__button-delete");
@@ -235,8 +246,21 @@ var bindTaskEvents=function(taskListItem,checkBoxEventHandler){
 //select ListItems children
     
     var checkBox=taskListItem.querySelector("input[type=checkbox]");
-    var editButton=taskListItem.querySelector("button.edit");
-    var deleteButton=taskListItem.querySelector("button.delete");
+    var editButton;
+    if (taskListItem.querySelector("button.Completed-section__button-edit")){
+        editButton=taskListItem.querySelector("button.Completed-section__button-edit");
+    }
+    else {
+        editButton=taskListItem.querySelector("button.Todo-section__button-edit");
+    }
+
+    var deleteButton;
+    if (taskListItem.querySelector("button.Completed-section__button-edit")){
+        deleteButton=taskListItem.querySelector("button.Completed-section__button-delete");
+    }
+    else {
+        deleteButton=taskListItem.querySelector("button.Todo-section__button-delete");
+    }
 
 
     //Bind editTask to edit button.
